@@ -53,7 +53,7 @@ from rodar_analise import modelo
 from atualizar_site import upload
 
 
-# webbot_sabesp(datetime.datetime.now())
+webbot_sabesp(datetime.datetime.now())
 corrige()
 consolida()
 modelo()

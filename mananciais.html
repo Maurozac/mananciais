@@ -1,0 +1,395 @@
+<!doctype html>
+<html class="no-js" lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="Monitorando os mananciais de São Paulo" />
+    <meta property="og:url" content="http://www.probabit.com.br/mananciais.html" />
+    <meta property="og:image" content="http://www.probabit.com.br/mananciais/prog4396.png" />
+    <meta property="og:description" content="Teremos água? Uma ferramenta independente para monitorar os mananciais de São Paulo." />
+    <meta property="og:locale" content="pt_BR" />
+    <title>Mananciais SP | Probabit</title>
+    <link href="http://fonts.googleapis.com/css?family=Architects+Daughter" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="mananciais/css/foundation.min.css" />
+    <link rel="stylesheet" href="mananciais/css/font-awesome.min.css" />
+    <script src="mananciais/js/vendor/modernizr.js"></script>
+    <script src="mananciais/js/vendor/jquery.js"></script>
+    <style>
+        body {
+          font-family: 'Ubuntu';
+        }
+        h3{
+          font-family: 'Architects Daughter';
+        }
+        a{
+          color: #1f78b4;
+        }
+        a:hover{
+          color: #ff003f;
+        }
+        .gde{
+          font-size: 2rem;
+        }
+        #expande{
+          display:none;
+          background-color: rgba(0,0,0,0.8);
+          width: 100%;
+          height: 100%;
+          position:fixed;
+          top:0;
+          text-align: center;
+          padding:1rem 10rem;
+        }
+    </style>
+  </head>
+  <body>
+    <br />
+    <div class="row">
+        <div class="small-12 columns">
+            <label>Usando dados públicos para monitorar a gestão da água</label>
+            <h3>Mananciais de São Paulo</h3>
+        </div>
+    <hr />
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+            <p><b>Situação em <span id="dia"></span></b></p>
+          <div class="row">
+            <div class="small-12 columns">
+              <p><label><span class="gde" id="d0a">...</span> milímetros de chuva ontem, <span id="d2b">...</span> mm acumulados em 1 ano.</label></p>
+              <p><label><span class="gde" id="d1a">...</span> bilhões de litros (<span id="d1b">...</span>) de água em estoque. Em 24 horas, o volume <span id="d1c">...</span> (<span id="d1d">...</span>).</label></p>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="small-9 columns">
+            <img id="grafico1" width="100%"/>
+            <div class="row" style="margin: 1rem 0">
+              <div onclick="passado_gr1()" class="small-5 columns" style="text-align: right">
+                <a class="fa fa-chevron-circle-left"></a>
+              </div>
+              <div class="small-2 columns" style="text-align: center">
+                <a><small>navegue</small></a>
+              </div>
+              <div onclick="futuro_gr1()" class="small-5 columns" style="text-align: left">
+                <a class="fa fa-chevron-circle-right"></a>
+              </div>
+            </div>
+        </div>
+        <div class="small-12 columns">
+            <br />
+            <p><b>Como ler este gráfico?</b></p>
+            <p>Os pontos mostram a relação entre o acumulado anual de chuva (eixo x) e a variação
+              no estoque de água (eixo y), com dados diários deste 1º de janeiro de 2003. Cada observação leva em conta os dados de dois dias separados pelo intervalo exato de um ano
+              e compara o quanto choveu desde o mesmo dia do ano anterior com a mudança no estoque de água nesse período.</p>
+            <p>A inclinação na nuvem de pontos corresponde intuitivamnete ao fato de que mais chuva gera acúmulo (variação positiva do estoque) e menos chuva gera perda
+              (variação negativa do estoque) no sistema de armazenamento.</p>
+            <p>Além disso, a variação do estoque fica próxima de zero quando o acumulado de chuva não se descola muito da <a target="_blank" href="http://pt.wikipedia.org/wiki/Clima_da_cidade_de_São_Paulo">média histórica da cidade, que é de 1.441 mm</a>.
+              É para esse padrão usual de chuvas que o sistema foi projetado. Com essa oferta de chuvas, o sistema opera sem grandes desvios de seu equilíbrio, isto é, o volume estocado em qualquer dia do ano é muito parecido com o mesmo dia do ano anterior.
+              Os extremos de variação correspondem a anos com chuvas ou secas atípicas que modificam a sazonalidade da oferta de água. <a href="#anos">Ver padrões ano a ano</a>. </p>
+            <p>A zona mais clara no gráfico mostra quando o sistema está em regime de perda. A parte de cima corresponde às fases de acumulação.
+              Quando aparece uma zona vermelha significa que o estoque está abaixo de 50%. Novos pontos dentro da zona vermelha indicam que o sistema
+              está em risco.</p>
+            <p>O momento atual é indicado pelos pontos interligados, com destaque para as leituras de hoje e de 30, 60 e 90 dias atrás.</p>
+            <p>Vale a capacidade total de armazenamento de água em São Paulo, ou seja, os 2,24 trilhões de litros
+             somados dos Sistemas Cantareira, Alto Tietê, Guarapiranga, Cotia, Rio Grande e Rio Claro. <a href="#dados">Quer explorar os dados?</a></p>
+        </div>
+    <hr />
+   </div>
+    <div class="row">
+      <div class="small-12 columns">
+        <p><b>Aprofundando a análise</b></p>
+      </div>
+      <div class="small-6 columns">
+            <img src="mananciais/regressao1.png" width="100%" style="padding-bottom: 2rem" />
+      </div>
+      <div class="small-6 columns">
+        <p>Um ajuste linear nos casos observados mostra que existe correlação entre o acumulado de chuva e a variação no estoque hídrico. O ponto na reta em que y é zero é o <i>ponto de equilíbrio</i> que representa a chuva estimada pelo modelo para o sistema não variar.</p>
+        <p>A correlação só não é melhor porque ocorre uma grande variação no comportamento do sistema, especialmente na faixa mais central. Acima de 1.800 mm há dois caminhos bem separados,
+          o inferior correspondendo ao perído entre 2009 e 2010 quando os reservatórios ficaram cheios e não foi possível estocar toda a chuva.</p>
+        <p>Além da gestão deliberada da eficiência, podem contribuir para as flutuações observadas as variações
+        combinadas no consumo, nas perdas e na efetividade da captação de água.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-12 columns">
+        <br />
+        <p><em>Simulação 1: Efeito do aumento no volume de armazenamento</em></p>
+      </div>
+      <div class="small-6 columns">
+            <img src="mananciais/regressao2.png" width="100%" style="padding-bottom: 2rem"/>
+      </div>
+      <div class="small-6 columns">
+        <p>Nesta simulação incluímos no volume total a reserva adicional da represa Billings, 998 bilhões de litros, não
+          utilizada na prática por estar poluída.</p>
+        <p>A visualização gráfica mostra claramente que aumentar o estoque disponível não muda o ponto de equilíbrio. A nova inclinação, mais leve, indica que a variação de estoque
+          se torna menos sensível à chuva, mas que ele continua diminuindo se chover abaixo do ponto de equilíbrio.</p>
+      </div>
+      <div class="small-12 columns">
+        <br />
+        <p><em>Simulação 2: Efeito da melhoria na eficiência</em></p>
+      </div>
+      <div class="small-6 columns">
+        <img src="mananciais/regressao3.png" width="100%" style="padding-bottom: 2rem"/>
+      </div>
+      <div class="small-6 columns">
+        <p>O único modo de manter o estoque estável quando as chuvas se tornam mais escassas é mudar a <i>curva de eficiência</i> do sistema. Em outras palavras, é preciso consumir menos e adaptar-se a uma menor entrada de água no sistema.</p>
+        <p>A nova linha no gráfico indica o eixo ao redor do qual os pontos precisam flutuar para que o sistema se equilibre com uma oferta anual de 1.200 mm de chuva.</p>
+        <p>A elevação da eficiência pode ser alcançada por redução no consumo, redução nas perdas, recuperação das matas ciliares e nascentes em torno dos mananciais e melhores tecnologias de captação de água.</p>
+      </div>
+      <div class="small-12 columns">
+        <br />
+        <p id="economia"><em>Simulação 3: Eficiência corrente e economia necessária</em></p>
+      </div>
+      <div class="small-6 columns">
+        <img id="grafico3" width="100%"/>
+        <div class="row" style="margin: 1rem 0">
+              <div onclick="passado_gr3()" class="small-5 columns" style="text-align: right">
+                <a class="fa fa-chevron-circle-left"></a>
+              </div>
+              <div class="small-2 columns" style="text-align: center">
+                <a><small>navegue</small></a>
+              </div>
+              <div onclick="futuro_gr3()" class="small-5 columns" style="text-align: left">
+                <a class="fa fa-chevron-circle-right"></a>
+              </div>
+        </div>
+      </div>
+      <div class="small-6 columns">
+        <p>Para estimar a eficiência corrente são usadas as últimas 120 observações do comportamento do sistema.</p>
+        <p>A curva de eficiência corrente permite estimar o ponto de equilíbrio atual do sistema (ponto vermelho em destaque).</p>
+        <p>O triângulo indica a última observação do acumulado anual de chuvas. A distância vertical entre esse ponto até curva de eficiência indica o quanto o sistema está perdendo ou ganhando.</p>
+      </div>
+    <hr />
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+          <p id="prognostico"><b>Prognóstico</b></p>
+        </div>
+      <div class="small-6 columns">
+        <img id="grafico2" width="100%"/>
+        <div class="row" style="margin: 1rem 0">
+              <div onclick="passado_gr2()" class="small-5 columns" style="text-align: right">
+                <a class="fa fa-chevron-circle-left"></a>
+              </div>
+              <div class="small-2 columns" style="text-align: center">
+                <a><small>navegue</small></a>
+              </div>
+              <div onclick="futuro_gr2()" class="small-5 columns" style="text-align: left">
+                <a class="fa fa-chevron-circle-right"></a>
+              </div>
+        </div>
+      </div>
+      <div class="small-6 columns">
+        <p>Quando o regime do sistema é de perda o gráfico mostra quantos dias restam de água em função do acumulado de chuva, considerando a eficiência corrente.</p>
+        <p>O ponto em destaque considera a observação mais recente de chuva acumulada no ano e mostra quantos dias restam de água se persistirem as condições atuais de chuva e de eficiência.</p>
+        <p>O prognóstico é uma referência que varia de acordo com as novas observações e não tem probabilidade definida. Um estoque acima de dois anos me parece uma boa margem de segurança.</p>
+      </div>
+    <hr />
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+          <p id="dados"><b>Os dados</b></p>
+          <p>O ponto de partida são os <a target="_blank" href="http://www2.sabesp.com.br/mananciais/DivulgacaoSiteSabesp.aspx">dados divulgados diariamente pela Sabesp</a>. Se quiser usar, baixe direto daqui a <a target="_blank" href="/mananciais/mananciais.csv">série com os dados originais da Sabesp</a>. Este arquivo é atualizado diariamente.</p>
+          <p>Há duas importantes limitações nos dados originais: 1) a Sabesp usa somente porcentagens para se referir a reservatórios com volumes totais muito diferentes; 2) a forma de medir as porcentagens varia no tempo <a href="http://mauriciotuffani.blogfolha.uol.com.br/2014/09/20/um-dia-especial-para-o-grafico-desinformativo-da-sabesp/" target="_blank">quebrando a consistência da série</a>.</p>
+      <div class="row">
+        <div class="small-9 columns">
+          <img src="mananciais/tabela_estoque.png" width="100%" style="margin-bottom: 2rem"/>
+        </div>
+      </div>
+        </div>
+        <div class="small-12 columns">
+          <p>Por isso, é necessário corrigir as porcentagens da série de dados original em relação ao volume total atual, uma vez que os volumes que não eram acessíveis se tornaram acessíveis e, convenhamos, sempre estiveram lá nas represas. A <a target="_blank" href="/mananciais/mananciais_corrigido.csv"> série com os dados corrigidos</a> também está aqui. Ela contém uma coluna adicional com os dados dos volumes reais (em bilhões de litros: hm3)</p>
+          <p>Os gráficos e análises desta página abstraem os diferentes reservatórios e fingem (como diria minha filha) que toda a água está em um único grande reservatório. Esta <a target="_blank" href="/mananciais/mananciaisSerie.csv">série consolidada</a> também está disponível.</p>
+        </div>
+    <hr />
+    </div>
+    <div class="row">
+      <div class="small-12 columns">
+        <p><b>A oscilação sazonal do estoque</b></p>
+      </div>
+      <div class="small-6 columns">
+        <img src="mananciais/oscila.png" />
+      </div>
+      <div class="small-6 columns">
+        <p>A sazonalidade na oferta de chuvas é a causa da necessidade de armazenar água em represas.
+           Este gráfico mostra como o volume de água estocado oscila durante o ano em São Paulo.</p>
+        <p>A linha mais grossa mostra que a oscilação do volume médio durante o ano é de aproximadamente 20%. Sendo assim, o volume total estocado tem que ser maior do que isso simplesmente para dar conta da oscilação média dentro do ano.</p>
+        <p>Entretanto, a variação em torno da média é grande, conforme mostram as linhas que delimitam os quartis (-25% e +25%), o mínimo e o máximo.</p>
+        <p>A banda entre os quartis é razoavelmente estreita, o problema é que ocorrrem situações extremas, como mostram os limites de mínimo e de máximo. Para lidar com eles é preciso atuar na eficiência.</p>
+      </div>
+    <hr />
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+          <p id="anos"><b>Padrões ano a ano</b></p>
+          <p>Observe como a eficiência varia! Depois de ficar com o "tanque cheio" em 2010 a eficiência caiu
+          e assim ficou até a crise hídrica de 2014. Em 2015, houve um choque de gestão e a eficiência subiu, tanto
+          que mesmo com poucas chuvas em 2018 o estoque não caiu tanto, graças à uma melhor eficiência do sistema.</p>
+        </div>
+        <ul class="small-block-grid-3">
+            <li><img src="mananciais/estoque2003.png" /></li>
+            <li><img src="mananciais/estoque2004.png" /></li>
+            <li><img src="mananciais/estoque2005.png" /></li>
+        </ul>
+        <ul class="small-block-grid-3" style="text-align: right">
+            <li></li>
+            <li><img src="mananciais/chuva_vs_vol2004.png" /></li>
+            <li><img src="mananciais/chuva_vs_vol2005.png" /></li>
+        </ul>
+        <ul class="small-block-grid-3">
+            <li><img src="mananciais/estoque2006.png" /></li>
+            <li><img src="mananciais/estoque2007.png" /></li>
+            <li><img src="mananciais/estoque2008.png" /></li>
+        </ul>
+        <ul class="small-block-grid-3">
+            <li><img src="mananciais/chuva_vs_vol2006.png" /></li>
+            <li><img src="mananciais/chuva_vs_vol2007.png" /></li>
+            <li><img src="mananciais/chuva_vs_vol2008.png" /></li>
+        </ul>
+        <ul class="small-block-grid-3">
+            <li><img src="mananciais/estoque2009.png" /></li>
+            <li><img src="mananciais/estoque2010.png" /></li>
+            <li><img src="mananciais/estoque2011.png" /></li>
+        </ul>
+        <ul class="small-block-grid-3">
+            <li><img src="mananciais/chuva_vs_vol2009.png" /></li>
+            <li><img src="mananciais/chuva_vs_vol2010.png" /></li>
+            <li><img src="mananciais/chuva_vs_vol2011.png" /></li>
+        </ul>
+        <ul class="small-block-grid-3" id="padroes">
+            <li><img src="mananciais/estoque2012.png" /></li>
+            <li><img src="mananciais/estoque2013.png" /></li>
+            <li><img src="mananciais/estoque2014.png" /></li>
+        </ul>
+        <ul class="small-block-grid-3">
+            <li><img src="mananciais/chuva_vs_vol2012.png" /></li>
+            <li><img src="mananciais/chuva_vs_vol2013.png" /></li>
+            <li><img src="mananciais/chuva_vs_vol2014.png" /></li>
+        </ul>
+        <ul class="small-block-grid-3">
+            <li><img src="mananciais/estoque2015.png" /></li>
+            <li><img src="mananciais/estoque2016.png" /></li>
+            <li><img src="mananciais/estoque2017.png" /></li>
+        </ul>
+        <ul class="small-block-grid-3">
+            <li><img src="mananciais/chuva_vs_vol2015.png" /></li>
+            <li><img src="mananciais/chuva_vs_vol2016.png" /></li>
+            <li><img src="mananciais/chuva_vs_vol2017.png" /></li>
+        </ul>
+        <ul class="small-block-grid-3">
+            <li><img src="mananciais/estoque2018.png" /></li>
+            <!-- <li><img src="mananciais/estoque2019.png" /></li>
+            <li><img src="mananciais/estoque2020.png" /></li>
+            -->
+        </ul>
+        <ul class="small-block-grid-3">
+            <li><img src="mananciais/chuva_vs_vol2018.png" /></li>
+            <!-- <li><img src="mananciais/chuva_vs_vol2019.png" /></li>
+            <li><img src="mananciais/chuva_vs_vol2020.png" /></li> -->
+        </ul>
+    <hr />
+    </div>
+    <div class="row">
+      <div class="small-12 columns">
+        <p><b>Sobre este estudo</b></p>
+      </div>
+      <div class="small-12 columns">
+        <p>Fiquei realmente preocupado com a crise da água de 2014 em São Paulo,
+          <a target="_blank" href="https://edge.org/conversation/why-do-some-societies-make-disastrous-decisions">porque nem sempre somos capazes de evitar certos desastres</a>. Deveria eu fugir da cidade? Qual era a real gravidade da situação?</p>
+        <p>As análises na época, de baixa qualidade e enviesadas politicamente, não ajudavam e resolvi encarar o caso
+          como um exercício de ciência de dados: coletar, organizar, modelar e extrair informações úteis com foco no raciocínio visual e respostas objetivas.
+          Eu queria aprender mais algumas ferramentas em python e ver se eu daria conta de rodar um projeto assim de ponta a ponta.</p>
+        <p>O site entrou no ar em 16 de janeiro de 2015. Todos os dias, os modelos e os gráficos são refeitos com as novas informações divulgadas pela Sabesp.
+         As <a href="#dados">séries de dados pode ser baixadas daqui</a>.
+         Em 2018 atualizei, <a target="_blank" href="https://github.com/Maurozac/mananciais">reestruturei e abri o código</a> que automatiza o site, incorporando alguns conceitos
+         de microservices na arquitetura. O objetivo é mostrar um caso concreto de como os sistemas de análises de dados podem ser feitos.</p>
+        <h3>Mauro Zac</h3>
+        <p><i class="fa fa-send-o fa-fw" style="padding-right: 2rem"></i>maurozac<i class="fa fa-at"></i>gmail.com</p>
+        <p><a target="_blank" href="http://www.probabit.com.br"><i class="fa fa-circle fa-fw" style="padding-right: 2rem"></i>Probabit<small style="padding-left: 2rem">laboratório de dados</small></a></p>
+        <hr />
+      </div>
+    </div>
+    <div id="expande" onclick="$(this).css('display','none')"></div>
+    <script src="mananciais/js/foundation.min.js"></script>
+    <script>
+      var jan14 = new Date(Date.UTC(2015,0,13,10,0,0));
+      var hoje = 4391 + parseInt((Date.now() - jan14.valueOf())/(24*60*60*1000));
+      function passado_gr1(){
+        var visto = $('#grafico1').attr('src');
+        var ver = (parseInt(visto.split('.')[0].slice(15)) - 1).toString()
+        $('#grafico1').attr('src', 'mananciais/graf'+ver+'.png').error(function(){
+          $('#grafico1').attr('src',visto);
+          });;
+      };
+      function futuro_gr1(){
+        var visto = $('#grafico1').attr('src');
+        var ver = (parseInt(visto.split('.')[0].slice(15)) + 1).toString()
+        $('#grafico1').attr('src', 'mananciais/graf'+ver+'.png').error(function(){
+          $('#grafico1').attr('src',visto);
+          });
+      };
+      function passado_gr2(){
+        var visto = $('#grafico2').attr('src');
+        var ver = (parseInt(visto.split('.')[0].slice(15)) - 1).toString()
+        $('#grafico2').attr('src', 'mananciais/prog'+ver+'.png').error(function(){
+          $('#grafico2').attr('src',visto);
+          });;
+      };
+      function futuro_gr2(){
+        var visto = $('#grafico2').attr('src');
+        var ver = (parseInt(visto.split('.')[0].slice(15)) + 1).toString()
+        $('#grafico2').attr('src', 'mananciais/prog'+ver+'.png').error(function(){
+          $('#grafico2').attr('src',visto);
+          });;
+      };
+      function passado_gr3(){
+        var visto = $('#grafico3').attr('src');
+        var ver = (parseInt(visto.split('.')[0].slice(13)) - 1).toString()
+        $('#grafico3').attr('src', 'mananciais/ef'+ver+'.png').error(function(){
+          $('#grafico3').attr('src',visto);
+          });;
+      };
+      function futuro_gr3(){
+        var visto = $('#grafico3').attr('src');
+        var ver = (parseInt(visto.split('.')[0].slice(13)) + 1).toString()
+        $('#grafico3').attr('src', 'mananciais/ef'+ver+'.png').error(function(){
+          $('#grafico3').attr('src',visto);
+          });;
+      };
+      $.getJSON('mananciais/mananciais.json', function(d){
+        $('#dia').text(d.data);
+        $('#d0a').text(d.chuva);
+        $('#d1a').text(d.estoque_hm3);
+        $('#d1b').text(d.estoque_p);
+        if(d.estoque_24h_hm3 === '0,00%') {
+          $('#d1c').text('não se alterou');
+        }
+        else if( d.estoque_24h_hm3.slice(0,1) === '-'){
+          $('#d1c').text('caiu '+d.estoque_24h_hm3.slice(1)+' bilhões de litros');
+        }
+        else{
+          $('#d1c').text('subiu '+d.estoque_24h_hm3+' bilhões de litros');
+        };
+        $('#d1d').text(d.estoque_24h_p);
+        $('#d2b').text(d.chuva_mm_ano);
+      });
+      $('#grafico1').attr('src', 'mananciais/graf'+hoje.toString()+'.png').error(function(){
+        hoje -= 1;
+        $('#grafico1').attr('src','mananciais/graf'+hoje.toString()+'.png');
+      });
+      $('#grafico2').attr('src', 'mananciais/prog'+hoje.toString()+'.png').error(function(){
+        $('#grafico2').attr('src', 'mananciais/prog'+hoje.toString()+'.png');
+      });
+      $('#grafico3').attr('src', 'mananciais/ef'+hoje.toString()+'.png').error(function(){
+        $('#grafico3').attr('src', 'mananciais/ef'+hoje.toString()+'.png');
+      });
+      $('img').on('click', function(){
+        $("#expande").html('<img src="'+$(this).attr('src')+'" />').css('display','block');
+      });
+      $(document).foundation();
+    </script>
+  </body>
+</html>

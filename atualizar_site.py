@@ -40,8 +40,9 @@ import boto
 import shutil
 import os
 
-AWS_ID = 'seu_id'
-AWS_KEY = 'sua_key'
+AWS_ID = "seu_id"
+AWS_KEY = "sua_key"
+HOST = 'seu_host' # meu "www.probabit.com.br"
 PATH = "/home/ubuntu/mananciais/"
 
 
@@ -53,10 +54,10 @@ def upload():
     # serie original precisa ter copia mantida no root do path
     shutil.copy(PATH+'mananciais.csv', PATH+'data/mananciais.csv')
     s3 = boto.connect_s3(aws_access_key_id=AWS_ID, aws_secret_access_key=AWS_KEY)
-    bucket = s3.lookup('www.probabit.com.br')
+    bucket = s3.lookup(HOST)
     for root, dirs, files in os.walk(PATH + 'data'):
         for f in files:
-            if f is not '.DS_Store':
+            if f[0] is not '.':
                 key = bucket.new_key(os.path.join('mananciais', f))
                 key.set_contents_from_filename(os.path.join(root, f), policy='public-read')
                 # limpa dados do disco local

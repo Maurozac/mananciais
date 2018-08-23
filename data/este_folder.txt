@@ -1,0 +1,1 @@
+A pasta vazia chamada /data serve de diretório temporário para os arquivos criados pelo script antes de subir para a S3. Após o upload a pasta é esvaziada para não acumular arquivos na máquina que roda o script. 

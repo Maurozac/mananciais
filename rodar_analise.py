@@ -316,7 +316,7 @@ def prognostico(chuva, volume, L, HOJE):
     ax.set(title=u'Mananciais SP - Prognóstico',
            xlim=(800, 2200),
            xlabel=u'Acumulado de chuva em um ano (mm)',
-           ylabel=u'Variação do estoque em um ano (%)')
+           ylabel=u'Dias de estoque')
     # 1. usar eficiencia corrente: 120 dias
     x = [sum(chuva[i-365+1:i+1]) for i in range(365, L)]  # var chuva
     y = [volume[i] - volume[i-365] for i in range(365, L)]  # var volume

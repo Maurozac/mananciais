@@ -64,7 +64,6 @@ def chuva_vs_var(chuva, volume, L, HOJE):
     . baixa densidade de elementos decorativos, redundantes ou dispensáveis
     . repetição do mesmo formato incentiva a comparação
     . incluir labels explicativos
-    . o gráfico deve nos guiar em reflexões simples e complexas
     . visão geral e visões particulares sobrepostas e integradas
     . privilegiar relações lineares de causa e efeito
     . responder a perguntas pertinentes, esclarecer e apoiar a decisão
